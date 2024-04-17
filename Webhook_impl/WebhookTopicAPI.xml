@@ -1,0 +1,1823 @@
+<entityStoreData xmlns="http://www.vordel.com/2005/06/24/entityStore">
+<metaInfo flags="138">
+	<exportRoots>
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Create a topic'/>
+					</key>
+				</key>
+			</key>
+		</key>
+		<key type='NetService'>
+			<id field='name' value='Service'/>
+			<key type='HTTP'>
+				<id field='name' value='Default Services'/>
+				<key type='CoreAPIBroker'>
+					<id field='uriprefix' value='/webhooktopic/v1'/>
+					<id field='httpMethod' value='*'/>
+				</key>
+			</key>
+		</key>
+		<key type='ESConfiguration'>
+			<id field='name' value='Entity Store Configuration'/>
+		</key>
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+				</key>
+			</key>
+		</key>
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+				</key>
+			</key>
+		</key>
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Delete a topic'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</exportRoots>
+	<typeVersions>
+		<type name="AddHTTPHeaderFilter" version="5"/>
+		<type name="ChangeMessageFilter" version="0"/>
+		<type name="CircuitContainer" version="3"/>
+		<type name="CircuitDelegateFilter" version="1"/>
+		<type name="ConnectToURLFilter" version="4"/>
+		<type name="ConnectionFilter" version="22"/>
+		<type name="ConversionFilter" version="0"/>
+		<type name="CoreAPIBroker" version="0"/>
+		<type name="CoreAPIMethod" version="0"/>
+		<type name="ESConfiguration" version="40"/>
+		<type name="Entity" version="0"/>
+		<type name="FalseFilter" version="0"/>
+		<type name="Filter" version="5"/>
+		<type name="FilterCircuit" version="4"/>
+		<type name="HTTP" version="6"/>
+		<type name="JSONPath" version="1"/>
+		<type name="JSONPathFilter" version="0"/>
+		<type name="JavaProcess" version="0"/>
+		<type name="JavaScriptFilter" version="3"/>
+		<type name="LoadableModule" version="2"/>
+		<type name="NativeModule" version="0"/>
+		<type name="NetService" version="5"/>
+		<type name="Process" version="0"/>
+		<type name="Reflector" version="0"/>
+		<type name="RootChild" version="0"/>
+		<type name="SaveToFileFilter" version="2"/>
+		<type name="ServiceContextFilter" version="5"/>
+		<type name="SetHTTPStatusCode" version="0"/>
+		<type name="SocketProtocol" version="1"/>
+		<type name="TrueFilter" version="0"/>
+		<type name="URIHandler" version="6"/>
+		<type name="XMLFirewall" version="9"/>
+	</typeVersions>
+	<realizedTypes><![CDATA[
+<entityStoreData>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="Entity" name="RootChild"/>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="RootChild" name="LoadableModule">
+        <constant name="_version" type="integer" value="2"/>
+        <constant name="loadorder" type="integer" value="1000000"/>
+        <field cardinality="?" name="classloader" type="^ClassLoader"/>
+
+        </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="LoadableModule" name="NativeModule">
+        <constant name="_version" type="integer" value="0"/>
+                <constant name="class" type="string" value="com.vordel.dwe.NativeModule"/>
+        </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="NativeModule" name="SocketProtocol">
+        <constant name="_version" type="integer" value="1"/>
+        <componentType name="Interface"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="SocketProtocol" name="HTTP">
+        <constant name="_version" type="integer" value="6"/>
+        <constant name="class" type="string" value="com.vordel.dwe.http.HTTP"/>
+        <componentType name="URIHandler"/>
+        <componentType name="VirtualHost"/>
+        <field cardinality="1" default="" isKey="true" name="name" type="string"/> <!--  ES needs name -->
+        <field cardinality="?" default="-1" name="corsProfile" type="^CORS"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="RootChild" name="ESConfiguration">
+        <constant name="_version" type="integer" value="40"/>
+        <!--
+            Give this singleton a key.
+        -->
+        <field isKey="true" name="name" type="string"/>
+        <!--
+            We use this field to verify that the passphrase for the
+            encryped data is synchronized between the server and client, and
+            between multiple invocations of the client
+        -->
+        <field name="passphraseTest" type="encrypted"/>
+        <field name="version" type="string"/>
+        <!-- The product key should never change for the lifetime of the product -->
+        <field name="productKey" type="string"/>
+        <field cardinality="?" name="gitrev" type="string"/>
+        <!--
+            This field contains the typerepo version used to create an EntityStore config.
+        -->
+        <field cardinality="1" name="typerepoVersion" type="string"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="RootChild" name="Process">
+        <constant name="_version" type="integer" value="0"/> <!-- Common features to all processes created by Vordel software. -->
+		<field isKey="true" name="name" type="string"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="Process" name="JavaProcess">
+        <constant name="_version" type="integer" value="0"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="JavaProcess" name="NetService">
+    <constant name="_version" type="integer" value="5"/>
+    <!-- Static type-field. -->
+    <constant name="executableImage" type="string" value="vshell"/>
+    <componentType name="LoadableModule"/>
+    <componentType name="ClassLoader"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="RootChild" name="CircuitContainer">
+    <constant name="_version" type="integer" value="3"/>
+    <componentType cardinality="*" name="FilterCircuit"/>
+    <componentType cardinality="*" name="CircuitContainer"/>
+    <componentType cardinality="*" name="MVProperty"/>
+    <field isKey="true" name="name" type="string"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="RootChild" name="FilterCircuit">
+        <constant name="_version" type="integer" value="4"/>
+		<componentType cardinality="*" name="Filter"/>
+		<componentType cardinality="1" name="BoundCircuit"/>
+		<componentType cardinality="*" name="Property"/>
+		<field cardinality="1" name="start" type="@Filter"/>
+		<field cardinality="?" name="fault" type="@Filter"/>
+		<field isKey="true" name="name" type="string"/>
+		<field cardinality="1" default="3" name="logMask" type="integer"/>
+
+		<field cardinality="?" name="description" type="string"/>		
+		<field cardinality="1" name="category" type="@PolicyCategory">
+            <defaultRef>
+                <key type="PolicyCategoryGroup">
+                  <id field="name" value="Policy Categories"/>
+                  <key type="PolicyCategory">
+                      <id field="name" value="miscellaneous"/>
+                  </key>
+                </key>
+            </defaultRef>
+        </field>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="Entity" name="URIHandler">
+        <constant name="_version" type="integer" value="6"/>
+        <constant name="class" type="string" value="com.vordel.dwe.http.URIHandler"/>
+		<field cardinality="1" default="" isKey="true" name="uriprefix" type="string"/>
+        <field cardinality="1" default="*" isKey="true" name="httpMethod" type="string"/>
+    	<field cardinality="1" default="LONGEST" name="pathMatching" type="string"/> <!-- EXACT, LONGEST -->
+        <field cardinality="?" default="-1" name="corsProfile" type="^CORS"/>
+    	<field cardinality="1" default="HTTP" name="corsUsage" type="string"/> <!-- HTTP, URIHANDLER -->
+        <field cardinality="1" default="true" name="trafficMonitoringEnabled" type="boolean"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="URIHandler" name="XMLFirewall">
+    <constant name="_version" type="integer" value="9"/>
+    <constant name="class" type="string" value="com.vordel.dwe.http.HTTPPlugin"/>
+    <constant name="loadorder" type="integer" value="2000000"/>
+    <componentType cardinality="*" name="CircuitReference"/>
+    <componentType cardinality="*" name="URIHandler"/>
+    <field default="1" name="evaluate" type="boolean"/>
+    <field cardinality="1" name="filterCircuit" type="^FilterCircuit"/>
+    <field cardinality="1" default="2" name="logMask" type="integer"/>
+    <field cardinality="1" default="0" name="payloadMask" type="integer"/>
+    <field cardinality="1" default="1" name="enabled" type="boolean"/>
+    <field cardinality="1" default="0" name="enableAccessLogging" type="boolean"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="XMLFirewall" name="CoreAPIBroker">
+    <constant name="_version" type="integer" value="0"/>
+    <constant name="class" type="string" value="com.vordel.coreapireg.runtime.CoreApiBroker"/>
+    <componentType cardinality="*" name="CoreAPIMethod"/>
+    <componentType cardinality="*" name="MVProperty"/>
+    
+    <field name="name" type="string"/>
+    <field name="id" type="string"/>
+    <field name="description" type="string"/>
+    <field cardinality="1" default="" name="markdownFile" type="string"/>
+    <field cardinality="1" default="INTERNAL" name="descriptionLocation" type="string"/> <!-- INTERNAL, MARKDOWN_FILE -->
+    <field cardinality="1" default="" name="summary" type="string"/>
+    <field cardinality="1" default="1.0" name="apiVersion" type="string"/>
+    <field name="destination" type="string"/>
+    <field cardinality="1" default="HTTP" name="routingType" type="string"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="XMLFirewall" name="CoreAPIMethod">
+
+    <constant name="_version" type="integer" value="0"/>
+    <constant name="class" type="string" value="com.vordel.coreapireg.runtime.Method"/>
+
+    <componentType cardinality="*" name="CoreAPIMethodQueryStringParameter"/>
+    <componentType cardinality="*" name="CoreAPIMethodErrorResponse"/>
+    <componentType cardinality="*" name="CoreAPIMethodDestinationParameter"/>
+    <componentType cardinality="?" name="MimeTypeFilter"/>
+    <componentType cardinality="*" name="MVProperty"/>
+
+    <field name="name" type="string"/>
+    <field name="id" type="string"/>
+    <field name="description" type="string"/>
+    <field cardinality="1" default="" name="markdownFile" type="string"/>
+    <field cardinality="1" default="INTERNAL" name="descriptionLocation" type="string"/> <!-- INTERNAL, MARKDOWN_FILE -->
+    <field name="notes" type="string"/>
+    <field name="destinationHttpVerb" type="string"/>
+    <field cardinality="1" name="destinationPath" type="string"/>
+    <field name="copyQueryParams" type="boolean"/>
+    <field cardinality="1" default="1" name="blockUnspecifiedParams" type="boolean"/>
+    <field cardinality="1" default="0" name="checkSourceContentType" type="boolean"/>
+    <field cardinality="1" default="INBOUND" name="copyContentType" type="string"/> <!-- INBOUND, CUSTOM -->
+    <field cardinality="1" default="application/x-www-form-urlencoded" name="destinationContentType" type="string"/>
+    <field cardinality="1" name="responseSchema" type="^JSONSchema"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="false" extends="Entity" name="JSONPath">
+        <constant name="_version" type="integer" value="1"/>
+        <field name="attributeName" type="string"/>
+        <field isKey="true" name="expression" type="string"/>
+        <field default="java.util.List" name="unmarshalType" type="string"/>
+        <field default="false" name="failOnError" type="boolean"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="Entity" name="Filter">
+        <constant name="_version" type="integer" value="5"/>
+        <field cardinality="?" name="successNode" type="@Filter"/>
+        <field cardinality="?" name="failureNode" type="@Filter"/>
+        <field isKey="true" name="name" type="string"/>
+        <field cardinality="1" default="2" name="logMask" type="integer"/>
+        <field cardinality="1" default="Filter aborted due to exception" name="logFatal" type="string"/>
+        <field cardinality="1" default="Filter failed" name="logFailure" type="string"/>
+        <field cardinality="1" default="Filter passed" name="logSuccess" type="string"/>
+        <field cardinality="1" name="category" type="@Category">
+            <defaultRef>
+                <key type="CategoryGroup">
+                  <id field="name" value="Filter Categories"/>
+                  <key type="Category">
+                      <id field="name" value="miscellaneous"/>
+                  </key>
+                </key>
+            </defaultRef>
+        </field>
+      <field cardinality="1" default="0" name="abortProcessingOnLogError" type="boolean"/>
+      <field cardinality="1" default="SERVICE" name="logMaskType" type="string"/>
+      <field cardinality="*" name="classloader" type="^ClassLoader"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="SaveToFileFilter">
+		<constant name="_version" type="integer" value="2"/>
+		<constant name="class" type="string" value="com.vordel.circuit.file.SaveToFileFilter"/>
+		<field cardinality="1" default="${id}.out" name="fileName" type="string"/>
+		<field cardinality="1" default="${environment.VINSTDIR}/message-archive" name="directory" type="string"/>
+		<field cardinality="1" default="1000" name="maxFileSize" type="integer"/>
+		<field cardinality="1" default="500" name="maxNumberFiles" type="integer"/>
+		<field cardinality="1" default="0" name="includeHeaders" type="boolean"/>
+		<field cardinality="1" default="0" name="includeRequestLine" type="boolean"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="ServiceContextFilter">
+      <constant name="_version" type="integer" value="5"/>
+      <constant name="class" type="string" value="com.vordel.circuit.ws.ServiceContextFilter"/>
+      <field cardinality="1" default="" name="serviceName" type="string"/>
+      <field cardinality="1" default="3" name="metricsMask" type="integer"/>
+      <field cardinality="1" default="authentication.subject.id" name="clientAttributeName" type="string"/>
+      <field cardinality="1" default="0" name="compositeContext" type="boolean"/>
+  </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="AddHTTPHeaderFilter">
+        <constant name="_version" type="integer" value="5"/>
+		<constant name="class" type="string" value="com.vordel.circuit.conversion.AddHTTPHeaderFilter"/>
+		<field cardinality="1" name="headerName" type="string"/>	
+        <field cardinality="1" name="headerValue" type="string"/>	
+        <field cardinality="1" default="0" name="base64Encode" type="boolean"/>
+        <field cardinality="1" default="1" name="overwriteExistingHeader" type="boolean"/>
+        <field cardinality="1" default="httpheaders" name="addWhere" type="string"/>
+        </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="TrueFilter">
+        <constant name="_version" type="integer" value="0"/>
+		<constant name="class" type="string" value="com.vordel.circuit.basic.True"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="CircuitDelegateFilter">
+        <constant name="_version" type="integer" value="1"/>
+		<constant name="class" type="string" value="com.vordel.circuit.CircuitDelegateFilter"/>
+		<field cardinality="?" name="circuitPK" type="^FilterCircuit"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" abstract="true" extends="Filter" name="ConversionFilter">
+        <constant name="_version" type="integer" value="0"/>
+		<field cardinality="?" name="outputContentType" type="string"/> 
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="ConversionFilter" name="ChangeMessageFilter">
+        <constant name="_version" type="integer" value="0"/>
+		<constant name="class" type="string" value="com.vordel.circuit.conversion.ChangeMessageFilter"/>
+		<field cardinality="1" default="" name="body" type="string"/>	
+         </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="JavaScriptFilter">
+        <constant name="_version" type="integer" value="3"/>
+	<constant name="class" type="string" value="com.vordel.circuit.script.ScriptFilter"/>
+	<field cardinality="1" default="function invoke(msg)         {            return true;         }" name="script" type="string"/>
+	<field cardinality="1" default="nashorn" name="engineName" type="string"/>
+        <field cardinality="*" name="requiredProperties" type="string"/>
+        <field cardinality="*" name="generatedProperties" type="string"/>
+        <field cardinality="*" name="consumedProperties" type="string"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="ConnectionFilter">
+        <constant name="_version" type="integer" value="22"/>
+        <constant name="class" type="string" value="com.vordel.circuit.net.ConnectionFilter"/>
+        <componentType cardinality="1" name="SaveToFileFilter"/>
+
+        <!-- Credential profile -->
+        <field cardinality="1" default="false" name="profileInUse" type="boolean"/>
+        <field cardinality="?" default="reference" name="profileType" type="string"/>
+        <field cardinality="?" name="profile" type="^NamedAuthnProfile"/>
+        <field cardinality="?" default="" name="profileSelector" type="string"/>
+
+        <!-- SSL Specific -->
+        <field cardinality="*" name="caCerts" type="^Certificate"/>
+        <field cardinality="*" name="sslUsers" type="^Certificate"/>
+        <field cardinality="1" default="true" name="useRootCerts" type="boolean"/>
+        <field default="FIPS:!SSLv3:!aNULL:!TLSv1:!kRSA" name="ciphers" type="string"/> <!-- See OpenSSL "ciphers" manpage -->
+        <!-- set of tokens for advanced SSL options: nosslv2, nosslv3, etc. -->
+        <field cardinality="*" name="ssloptions" type="string">
+            <defaultValue>nosslv2</defaultValue>
+            <defaultValue>nosslv3</defaultValue>
+            <defaultValue>notlsv1</defaultValue>
+            <defaultValue>notlsv1_1</defaultValue>
+            <defaultValue>noSslRenegotiation</defaultValue>
+        </field>
+
+        <field cardinality="?" default="0" name="sendProxyMode" type="boolean"/>
+        <field cardinality="?" default="0" name="forwardClientHostHeader" type="boolean"/>
+
+
+        <field cardinality="1" default="false" name="transparentProxy" type="boolean"/>
+        <field cardinality="1" default="false" name="sendReceivedContentHeaders" type="boolean"/>
+        <field cardinality="1" default="true" name="handleRedirects" type="boolean"/>
+        <field cardinality="1" default="false" name="performRetries" type="boolean"/>
+        <field cardinality="*" name="retryHTTPRanges" type="^HTTPStatusClass"/>
+        <field cardinality="1" default="5" name="retryCount" type="string"/>
+        <field cardinality="1" default="500" name="retryLatency" type="string"/>
+        <field cardinality="1" default="false" name="slaBreachAsFailure" type="boolean"/>
+        <field cardinality="1" default="false" name="saveTransactionOnFailure" type="boolean"/>
+        <field cardinality="1" default="false" name="runPolicyOnConnectionFailure" type="boolean"/>
+        <field cardinality="?" name="connectionFailurePolicy" type="^FilterCircuit"/>
+        <field cardinality="?" name="proxyServer" type="^ProxyServer"/>
+        <field cardinality="?" default="0" name="stickyness" type="integer"/>
+        <field cardinality="?" default="unnamed" name="stickyCookieName" type="string"/>
+        <field cardinality="?" default="600000" name="stickyCookieExpiry" type="long"/>
+        <field cardinality="?" default="" name="stickyCookiePath" type="string"/>
+        <field cardinality="?" default="" name="stickyCookieDomain" type="string"/>
+        <field cardinality="?" default="false" name="loadResponseBody" type="boolean"/>
+        <field cardinality="?" default="false" name="closePreviousConnection" type="boolean"/>
+        <field cardinality="?" default="false" name="overrideTimeouts" type="boolean"/>
+        <field cardinality="?" default="30000" name="connectTimeout" type="integer"/>
+        <field cardinality="?" default="30000" name="activetimeout" type="integer"/>
+        <field cardinality="?" default="240000" name="maxTransTimeout" type="integer"/>
+        <field cardinality="?" default="15000" name="idletimeout" type="integer"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="ConnectionFilter" name="ConnectToURLFilter">
+        <constant name="_version" type="integer" value="4"/>
+		<constant name="class" type="string" value="com.vordel.circuit.net.ConnectToURLFilter"/>
+		<field cardinality="1" default="${http.request.uri}" name="url" type="string"/>	
+		<field cardinality="1" default="${http.request.verb}" name="method" type="string"/>	
+		<field cardinality="1" default="${content.body}" name="body" type="string"/>	
+		<field cardinality="1" default="${http.headers}" name="protoHeaders" type="string"/>	
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="SetHTTPStatusCode">
+        <constant name="_version" type="integer" value="0"/>
+		<constant name="class" type="string" value="com.vordel.circuit.net.SetHTTPStatusFilter"/>
+        <field cardinality="1" default="200" name="httpResponseStatus" type="integer"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="SetHTTPStatusCode" name="Reflector">
+        <constant name="_version" type="integer" value="0"/>
+		<constant name="class" type="string" value="com.vordel.circuit.net.ReflectFilter"/>
+	</entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="JSONPathFilter">
+        <constant name="_version" type="integer" value="0"/>
+        <constant name="class" type="string" value="com.vordel.circuit.json.JSONPathFilter"/>
+        <componentType name="JSONPath"/>
+    </entityType>
+<entityType xmlns="http://www.vordel.com/2005/06/24/entityStore" extends="Filter" name="FalseFilter">
+        <constant name="_version" type="integer" value="0"/>
+		<constant name="class" type="string" value="com.vordel.circuit.basic.False"/>
+	</entityType>
+</entityStoreData>
+	]]></realizedTypes>
+</metaInfo>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="FilterCircuit">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="category"><value contentType="reference">
+		<key type='PolicyCategoryGroup'>
+			<id field='name' value='Policy Categories'/>
+			<key type='PolicyCategory'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logMask"><value>3</value></fval>
+	<fval name="name"><value>Create a topic</value></fval>
+	<fval name="start"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Create a topic'/>
+						<key type='ServiceContextFilter'>
+							<id field='name' value='Set service context'/>
+						</key>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitDelegateFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='Create a topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="circuitPK"><value contentType="reference">
+<key type='CircuitContainer'><id field='name' value='Webhook'/><key type='CircuitContainer'><id field='name' value='Register User'/><key type='FilterCircuit'><id field='name' value='00_0_CreateTopic'/></key></key></key>	</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="name"><value>Routing</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ServiceContextFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='Create a topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="clientAttributeName"><value>authentication.subject.id</value></fval>
+	<fval name="compositeContext"><value>0</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="metricsMask"><value>1</value></fval>
+	<fval name="name"><value>Set service context</value></fval>
+	<fval name="serviceName"><value>${api.name}</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Create a topic'/>
+						<key type='CircuitDelegateFilter'>
+							<id field='name' value='Routing'/>
+						</key>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+		</key>
+	</key>
+	<fval name="name"><value>Webhook topic</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+	</key>
+	<fval name="name"><value>REST API&apos;s</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<fval name="name"><value>Generated Policies</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CoreAPIBroker">
+	<key type='NetService'>
+		<id field='name' value='Service'/>
+		<key type='HTTP'>
+			<id field='name' value='Default Services'/>
+		</key>
+	</key>
+	<fval name="apiVersion"><value>1.0</value></fval>
+	<fval name="corsProfile"><value contentType="reference">-1</value></fval>
+	<fval name="corsUsage"><value xsi:nil="true"></value></fval>
+	<fval name="description"><value></value></fval>
+	<fval name="descriptionLocation"><value>INTERNAL</value></fval>
+	<fval name="destination"><value xsi:nil="true"></value></fval>
+	<fval name="enableAccessLogging"><value>0</value></fval>
+	<fval name="enabled"><value>1</value></fval>
+	<fval name="evaluate"><value>1</value></fval>
+	<fval name="httpMethod"><value>*</value></fval>
+	<fval name="id"><value>5f0c31eb-d6d2-4d92-a06d-d604fe56723f</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="markdownFile"><value></value></fval>
+	<fval name="name"><value>Webhook topic</value></fval>
+	<fval name="pathMatching"><value>LONGEST</value></fval>
+	<fval name="payloadMask"><value>0</value></fval>
+	<fval name="routingType"><value>CUSTOM</value></fval>
+	<fval name="summary"><value></value></fval>
+	<fval name="trafficMonitoringEnabled"><value>true</value></fval>
+	<fval name="uriprefix"><value>/webhooktopic/v1</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CoreAPIMethod">
+	<key type='NetService'>
+		<id field='name' value='Service'/>
+		<key type='HTTP'>
+			<id field='name' value='Default Services'/>
+			<key type='CoreAPIBroker'>
+				<id field='uriprefix' value='/webhooktopic/v1'/>
+				<id field='httpMethod' value='*'/>
+			</key>
+		</key>
+	</key>
+	<fval name="blockUnspecifiedParams"><value>true</value></fval>
+	<fval name="checkSourceContentType"><value>false</value></fval>
+	<fval name="copyContentType"><value>INBOUND</value></fval>
+	<fval name="copyQueryParams"><value>true</value></fval>
+	<fval name="corsProfile"><value contentType="reference">-1</value></fval>
+	<fval name="corsUsage"><value xsi:nil="true"></value></fval>
+	<fval name="description"><value></value></fval>
+	<fval name="descriptionLocation"><value>INTERNAL</value></fval>
+	<fval name="destinationContentType"><value>application/x-www-form-urlencoded</value></fval>
+	<fval name="destinationHttpVerb"><value>*</value></fval>
+	<fval name="destinationPath"><value xsi:nil="true"></value></fval>
+	<fval name="enableAccessLogging"><value>0</value></fval>
+	<fval name="enabled"><value>1</value></fval>
+	<fval name="evaluate"><value>1</value></fval>
+	<fval name="filterCircuit"><value contentType="reference">
+<key type='CircuitContainer'><id field='name' value='Generated Policies'/><key type='CircuitContainer'><id field='name' value='REST API&apos;s'/><key type='CircuitContainer'><id field='name' value='Webhook topic'/><key type='FilterCircuit'><id field='name' value='Delete a topic'/></key></key></key></key>	</value></fval>
+	<fval name="httpMethod"><value>DELETE</value></fval>
+	<fval name="id"><value>a41c1762-6981-4050-a05c-e556cf2a01d8</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="markdownFile"><value></value></fval>
+	<fval name="name"><value>Delete a topic</value></fval>
+	<fval name="notes"><value></value></fval>
+	<fval name="pathMatching"><value>EXACT</value></fval>
+	<fval name="payloadMask"><value>0</value></fval>
+	<fval name="responseSchema"><value contentType="reference">-1</value></fval>
+	<fval name="trafficMonitoringEnabled"><value>true</value></fval>
+	<fval name="uriprefix"><value>/topic</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CoreAPIMethod">
+	<key type='NetService'>
+		<id field='name' value='Service'/>
+		<key type='HTTP'>
+			<id field='name' value='Default Services'/>
+			<key type='CoreAPIBroker'>
+				<id field='uriprefix' value='/webhooktopic/v1'/>
+				<id field='httpMethod' value='*'/>
+			</key>
+		</key>
+	</key>
+	<fval name="blockUnspecifiedParams"><value>true</value></fval>
+	<fval name="checkSourceContentType"><value>false</value></fval>
+	<fval name="copyContentType"><value>INBOUND</value></fval>
+	<fval name="copyQueryParams"><value>true</value></fval>
+	<fval name="corsProfile"><value contentType="reference">-1</value></fval>
+	<fval name="corsUsage"><value xsi:nil="true"></value></fval>
+	<fval name="description"><value></value></fval>
+	<fval name="descriptionLocation"><value>INTERNAL</value></fval>
+	<fval name="destinationContentType"><value>application/x-www-form-urlencoded</value></fval>
+	<fval name="destinationHttpVerb"><value>*</value></fval>
+	<fval name="destinationPath"><value xsi:nil="true"></value></fval>
+	<fval name="enableAccessLogging"><value>0</value></fval>
+	<fval name="enabled"><value>1</value></fval>
+	<fval name="evaluate"><value>1</value></fval>
+	<fval name="filterCircuit"><value contentType="reference">
+<key type='CircuitContainer'><id field='name' value='Generated Policies'/><key type='CircuitContainer'><id field='name' value='REST API&apos;s'/><key type='CircuitContainer'><id field='name' value='Webhook topic'/><key type='FilterCircuit'><id field='name' value='Create a topic'/></key></key></key></key>	</value></fval>
+	<fval name="httpMethod"><value>POST</value></fval>
+	<fval name="id"><value>92d21f2e-8b2a-496a-bd8e-1d30a08b6314</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="markdownFile"><value></value></fval>
+	<fval name="name"><value>Create a topic</value></fval>
+	<fval name="notes"><value></value></fval>
+	<fval name="pathMatching"><value>EXACT</value></fval>
+	<fval name="payloadMask"><value>0</value></fval>
+	<fval name="responseSchema"><value contentType="reference">-1</value></fval>
+	<fval name="trafficMonitoringEnabled"><value>true</value></fval>
+	<fval name="uriprefix"><value>/topic</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="HTTP">
+	<key type='NetService'>
+		<id field='name' value='Service'/>
+	</key>
+	<fval name="name"><value>Default Services</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="NetService">
+	<fval name="name"><value>Service</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ESConfiguration">
+	<fval name="name"><value>Entity Store Configuration</value></fval>
+	<fval name="passphraseTest"><value>aHR0cDsvL3d3dy52b3JkZWwuY29t</value></fval>
+	<fval name="productKey"><value>VordelGateway</value></fval>
+	<fval name="typerepoVersion"><value>1.40.11</value></fval>
+	<fval name="version"><value>7.7.0</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="FilterCircuit">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+		</key>
+	</key>
+	<fval name="category"><value contentType="reference">
+		<key type='PolicyCategoryGroup'>
+			<id field='name' value='Policy Categories'/>
+			<key type='PolicyCategory'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="description"><value></value></fval>
+	<fval name="logMask"><value>3</value></fval>
+	<fval name="name"><value>02_0_Delete topic</value></fval>
+	<fval name="start"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='JSONPathFilter'>
+						<id field='name' value='Extraxct &quot;topicName&quot;'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ConnectToURLFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="activetimeout"><value>30000</value></fval>
+	<fval name="body"><value>${content.body}</value></fval>
+	<fval name="caCerts"></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="ciphers"><value>FIPS:!SSLv3:!aNULL:!TLSv1:!kRSA</value></fval>
+	<fval name="closePreviousConnection"><value>0</value></fval>
+	<fval name="connectTimeout"><value>30000</value></fval>
+	<fval name="connectionFailurePolicy"><value contentType="reference">-1</value></fval>
+	<fval name="failureNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='AddHTTPHeaderFilter'>
+						<id field='name' value='Add ConnectError header'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="forwardClientHostHeader"><value>0</value></fval>
+	<fval name="handleRedirects"><value>1</value></fval>
+	<fval name="idletimeout"><value>15000</value></fval>
+	<fval name="loadResponseBody"><value>0</value></fval>
+	<fval name="logFailure"><value>Failed to route request to endpoint.</value></fval>
+	<fval name="logFatal"><value>Error occurred while routing request to endpoint. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Successfully routed request to endpoint</value></fval>
+	<fval name="maxTransTimeout"><value>240000</value></fval>
+	<fval name="method"><value>DELETE</value></fval>
+	<fval name="name"><value>Connect and remove topic</value></fval>
+	<fval name="overrideTimeouts"><value>0</value></fval>
+	<fval name="performRetries"><value>0</value></fval>
+	<fval name="profile"><value contentType="reference">
+<key type='AuthProfilesGroup'><id field='name' value='Auth Profiles'/><key type='BasicAuthGroup'><id field='name' value='HTTP Basic'/><key type='BasicProfile'><id field='name' value='kps admin'/></key></key></key>	</value></fval>
+	<fval name="profileInUse"><value>1</value></fval>
+	<fval name="profileSelector"><value></value></fval>
+	<fval name="profileType"><value>reference</value></fval>
+	<fval name="protoHeaders"><value>${http.headers}</value></fval>
+	<fval name="proxyServer"><value contentType="reference">-1</value></fval>
+	<fval name="retryCount"><value>5</value></fval>
+	<fval name="retryHTTPRanges"><value contentType="reference">-1</value></fval>
+	<fval name="retryLatency"><value>500</value></fval>
+	<fval name="runPolicyOnConnectionFailure"><value>0</value></fval>
+	<fval name="saveTransactionOnFailure"><value>0</value></fval>
+	<fval name="sendProxyMode"><value>0</value></fval>
+	<fval name="sendReceivedContentHeaders"><value>0</value></fval>
+	<fval name="slaBreachAsFailure"><value>0</value></fval>
+	<fval name="sslUsers"><value contentType="reference">-1</value></fval>
+	<fval name="ssloptions">
+		<value>nosslv3</value>
+		<value>notlsv1</value>
+		<value>noSslRenegotiation</value>
+		<value>notlsv1_1</value>
+	</fval>
+	<fval name="stickyCookieDomain"><value></value></fval>
+	<fval name="stickyCookieExpiry"><value>600000</value></fval>
+	<fval name="stickyCookieName"><value>unnamed</value></fval>
+	<fval name="stickyCookiePath"><value></value></fval>
+	<fval name="stickyness"><value>0</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='TrueFilter'>
+						<id field='name' value='All good'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="transparentProxy"><value>0</value></fval>
+	<fval name="url"><value>https://${env.VM.HOSTNAME}:8090/api/router/service/instance-1/api/kps/subscribe/${service}</value></fval>
+	<fval name="useRootCerts"><value>1</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="SaveToFileFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+				<key type='ConnectToURLFilter'>
+					<id field='name' value='Connect and remove topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="directory"><value>${environment.VINSTDIR}/message-archive</value></fval>
+	<fval name="fileName"><value>${id}.out</value></fval>
+	<fval name="includeHeaders"><value>0</value></fval>
+	<fval name="includeRequestLine"><value>0</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="maxFileSize"><value>1000</value></fval>
+	<fval name="maxNumberFiles"><value>500</value></fval>
+	<fval name="name"><value>Persistence Details</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="TrueFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value></value></fval>
+	<fval name="logFatal"><value>True filter error. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>True filter passed</value></fval>
+	<fval name="name"><value>All good</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JavaScriptFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="consumedProperties"></fval>
+	<fval name="engineName"><value>groovy</value></fval>
+	<fval name="failureNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='AddHTTPHeaderFilter'>
+						<id field='name' value='Add ConnectError header'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="generatedProperties"></fval>
+	<fval name="logFailure"><value>Failed script filter</value></fval>
+	<fval name="logFatal"><value>Error while attempt to run script filter. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Passed script filter</value></fval>
+	<fval name="name"><value>Is empty?</value></fval>
+	<fval name="requiredProperties"></fval>
+	<fval name="script"><value>import com.vordel.kps.impl.KPS;&#xD;&#xA;def invoke(msg){&#xD;&#xA;try{      &#xD;&#xA;def userTable = KPS.getInstance().getModel().getAliases().get(&quot;subscribe&quot;);&#xD;&#xA;def updatelist = &apos;&apos;;&#xD;&#xA;def servicename = msg.get(&quot;service&quot;);&#xD;&#xA;def ipRow = userTable.getCached(servicename);&#xD;&#xA;def sublist = ipRow.get(&quot;subscriptionKey&quot;);&#xA;&#xA;if(sublist.size() &gt; 0) {&#xA;&#x9;return false;&#xA;}&#xA;else {&#xA;&#x9;return true;&#xA;}&#xA;&#xD;&#xA;return false; &#xD;&#xA;}catch(e){&#xD;&#xA;&#x9;msg.put(&quot;scripterror&quot;,e);&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;}</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='ConnectToURLFilter'>
+						<id field='name' value='Connect and remove topic'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ChangeMessageFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="body"><value>{&#xD;&#xA;&#x9;&quot;error&quot; : &quot;The topic has active subscriptions. Please, remove subscriptions first.&quot;&#xD;&#xA;}</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Failed in setting the message</value></fval>
+	<fval name="logFatal"><value>Error in setting the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in setting the message</value></fval>
+	<fval name="name"><value>Set bad request</value></fval>
+	<fval name="outputContentType"><value>application/json</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='Reflector'>
+						<id field='name' value='Bad request'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Reflector">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="httpResponseStatus"><value>400</value></fval>
+	<fval name="logFailure"><value>Failed to echo back the message</value></fval>
+	<fval name="logFatal"><value>Error occurred while echoing the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Successfully echoed back the message</value></fval>
+	<fval name="name"><value>Bad request</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="AddHTTPHeaderFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="addWhere"><value>httpheaders</value></fval>
+	<fval name="base64Encode"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="headerName"><value>ConnectError</value></fval>
+	<fval name="headerValue"><value>True</value></fval>
+	<fval name="logFailure"><value>Failed in adding the HTTP header to the message</value></fval>
+	<fval name="logFatal"><value>Error in adding the HTTP header to the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in adding the HTTP header to the message</value></fval>
+	<fval name="name"><value>Add ConnectError header</value></fval>
+	<fval name="overwriteExistingHeader"><value>1</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='ChangeMessageFilter'>
+						<id field='name' value='Set bad request'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JSONPathFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="failureNode"><value contentType="reference">-1</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="name"><value>Extraxct &quot;topicName&quot;</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Unsubscribe Users'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='02_0_Delete topic'/>
+					<key type='JavaScriptFilter'>
+						<id field='name' value='Is empty?'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JSONPath">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Unsubscribe Users'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='02_0_Delete topic'/>
+				<key type='JSONPathFilter'>
+					<id field='name' value='Extraxct &quot;topicName&quot;'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="attributeName"><value>service</value></fval>
+	<fval name="expression"><value>$.topicName</value></fval>
+	<fval name="failOnError"><value>0</value></fval>
+	<fval name="unmarshalType"><value>java.lang.String</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+	</key>
+	<fval name="name"><value>Unsubscribe Users</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<fval name="name"><value>Webhook</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="FilterCircuit">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+		</key>
+	</key>
+	<fval name="category"><value contentType="reference">
+		<key type='PolicyCategoryGroup'>
+			<id field='name' value='Policy Categories'/>
+			<key type='PolicyCategory'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="description"><value></value></fval>
+	<fval name="fault"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='ChangeMessageFilter'>
+						<id field='name' value='Falty message'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logMask"><value>3</value></fval>
+	<fval name="name"><value>00_0_CreateTopic</value></fval>
+	<fval name="start"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='JSONPathFilter'>
+						<id field='name' value='Extraxct &quot;topicName&quot;'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JSONPathFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="failureNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='ChangeMessageFilter'>
+						<id field='name' value='Set bad request'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="name"><value>Extraxct &quot;topicName&quot;</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='JavaScriptFilter'>
+						<id field='name' value='Does topic exist?'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JSONPath">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+				<key type='JSONPathFilter'>
+					<id field='name' value='Extraxct &quot;topicName&quot;'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="attributeName"><value>service</value></fval>
+	<fval name="expression"><value>$.topicName</value></fval>
+	<fval name="failOnError"><value>0</value></fval>
+	<fval name="unmarshalType"><value>java.lang.String</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ChangeMessageFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="body"><value>{&#xD;&#xA;    &quot;service&quot;: &quot;${service}&quot;,&#xD;&#xA;    &quot;subscriptionKey&quot;: []&#xA;}</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Failed in setting the message</value></fval>
+	<fval name="logFatal"><value>Error in setting the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in setting the message</value></fval>
+	<fval name="name"><value>Set Message</value></fval>
+	<fval name="outputContentType"><value>application/json</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='ConnectToURLFilter'>
+						<id field='name' value='Create new topic'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ChangeMessageFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="body"><value>{&#xD;&#xA;&#x9;&quot;error&quot; : &quot;the parameter - topic name - is missing from request&quot;&#xD;&#xA;}</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Failed in setting the message</value></fval>
+	<fval name="logFatal"><value>Error in setting the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in setting the message</value></fval>
+	<fval name="name"><value>Falty message</value></fval>
+	<fval name="outputContentType"><value>application/json</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="AddHTTPHeaderFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="addWhere"><value>httpheaders</value></fval>
+	<fval name="base64Encode"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="headerName"><value>ConnectError</value></fval>
+	<fval name="headerValue"><value>True</value></fval>
+	<fval name="logFailure"><value>Failed in adding the HTTP header to the message</value></fval>
+	<fval name="logFatal"><value>Error in adding the HTTP header to the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in adding the HTTP header to the message</value></fval>
+	<fval name="name"><value>Add ConnectError header</value></fval>
+	<fval name="overwriteExistingHeader"><value>1</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='Reflector'>
+						<id field='name' value='Bad request'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ConnectToURLFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="activetimeout"><value>30000</value></fval>
+	<fval name="body"><value>${content.body}</value></fval>
+	<fval name="caCerts"></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="ciphers"><value>FIPS:!SSLv3:!aNULL:!TLSv1:!kRSA</value></fval>
+	<fval name="closePreviousConnection"><value>0</value></fval>
+	<fval name="connectTimeout"><value>30000</value></fval>
+	<fval name="connectionFailurePolicy"><value contentType="reference">-1</value></fval>
+	<fval name="failureNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='FalseFilter'>
+						<id field='name' value='Create Subscription Failed'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="forwardClientHostHeader"><value>0</value></fval>
+	<fval name="handleRedirects"><value>1</value></fval>
+	<fval name="idletimeout"><value>15000</value></fval>
+	<fval name="loadResponseBody"><value>0</value></fval>
+	<fval name="logFailure"><value>Failed to route request to endpoint.</value></fval>
+	<fval name="logFatal"><value>Error occurred while routing request to endpoint. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Successfully routed request to endpoint</value></fval>
+	<fval name="maxTransTimeout"><value>240000</value></fval>
+	<fval name="method"><value>PUT</value></fval>
+	<fval name="name"><value>Create new topic</value></fval>
+	<fval name="overrideTimeouts"><value>0</value></fval>
+	<fval name="performRetries"><value>0</value></fval>
+	<fval name="profile"><value contentType="reference">
+<key type='AuthProfilesGroup'><id field='name' value='Auth Profiles'/><key type='BasicAuthGroup'><id field='name' value='HTTP Basic'/><key type='BasicProfile'><id field='name' value='kps admin'/></key></key></key>	</value></fval>
+	<fval name="profileInUse"><value>1</value></fval>
+	<fval name="profileSelector"><value></value></fval>
+	<fval name="profileType"><value>reference</value></fval>
+	<fval name="protoHeaders"><value>${http.headers}</value></fval>
+	<fval name="proxyServer"><value contentType="reference">-1</value></fval>
+	<fval name="retryCount"><value>5</value></fval>
+	<fval name="retryHTTPRanges"><value contentType="reference">-1</value></fval>
+	<fval name="retryLatency"><value>500</value></fval>
+	<fval name="runPolicyOnConnectionFailure"><value>0</value></fval>
+	<fval name="saveTransactionOnFailure"><value>0</value></fval>
+	<fval name="sendProxyMode"><value>0</value></fval>
+	<fval name="sendReceivedContentHeaders"><value>0</value></fval>
+	<fval name="slaBreachAsFailure"><value>0</value></fval>
+	<fval name="sslUsers"><value contentType="reference">-1</value></fval>
+	<fval name="ssloptions">
+		<value>nosslv3</value>
+		<value>notlsv1</value>
+		<value>noSslRenegotiation</value>
+		<value>notlsv1_1</value>
+	</fval>
+	<fval name="stickyCookieDomain"><value></value></fval>
+	<fval name="stickyCookieExpiry"><value>600000</value></fval>
+	<fval name="stickyCookieName"><value>unnamed</value></fval>
+	<fval name="stickyCookiePath"><value></value></fval>
+	<fval name="stickyness"><value>0</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='TrueFilter'>
+						<id field='name' value='All Good'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="transparentProxy"><value>0</value></fval>
+	<fval name="url"><value>https://${env.VM.HOSTNAME}:8090/api/router/service/instance-1/api/kps/subscribe/${service}</value></fval>
+	<fval name="useRootCerts"><value>1</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="SaveToFileFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+				<key type='ConnectToURLFilter'>
+					<id field='name' value='Create new topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="directory"><value>${environment.VINSTDIR}/message-archive</value></fval>
+	<fval name="fileName"><value>${id}.out</value></fval>
+	<fval name="includeHeaders"><value>0</value></fval>
+	<fval name="includeRequestLine"><value>0</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="maxFileSize"><value>1000</value></fval>
+	<fval name="maxNumberFiles"><value>500</value></fval>
+	<fval name="name"><value>Persistence Details</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="JavaScriptFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="consumedProperties"></fval>
+	<fval name="engineName"><value>groovy</value></fval>
+	<fval name="failureNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='ChangeMessageFilter'>
+						<id field='name' value='Set Message'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="generatedProperties"></fval>
+	<fval name="logFailure"><value>Failed script filter</value></fval>
+	<fval name="logFatal"><value>Error while attempt to run script filter. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Passed script filter</value></fval>
+	<fval name="name"><value>Does topic exist?</value></fval>
+	<fval name="requiredProperties"></fval>
+	<fval name="script"><value>import com.vordel.kps.impl.KPS;&#xD;&#xA;def invoke(msg){&#xD;&#xA;try{      &#xD;&#xA;def userTable = KPS.getInstance().getModel().getAliases().get(&quot;subscribe&quot;);&#xD;&#xA;def updatelist = &apos;&apos;;&#xD;&#xA;def servicename = msg.get(&quot;service&quot;);&#xD;&#xA;def ipRow = userTable.getCached(servicename);&#xD;&#xA;return true; &#xD;&#xA;}&#xA;catch(e){&#xD;&#xA;&#x9;msg.put(&quot;scripterror&quot;,e);&#xD;&#xA;&#x9;return false;&#xD;&#xA;}&#xD;&#xA;}</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='ChangeMessageFilter'>
+						<id field='name' value='Set topic exist'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ChangeMessageFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="body"><value>{&#xA;&#x9;&quot;error&quot;: &quot;Topic exists&quot;&#xA;}</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Failed in setting the message</value></fval>
+	<fval name="logFatal"><value>Error in setting the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in setting the message</value></fval>
+	<fval name="name"><value>Set topic exist</value></fval>
+	<fval name="outputContentType"><value>application/json</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='AddHTTPHeaderFilter'>
+						<id field='name' value='Add ConnectError header'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ChangeMessageFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="body"><value>{&#xD;&#xA;&#x9;&quot;error&quot; : &quot;the parameter - topic name - is missing from request&quot;&#xD;&#xA;}</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Failed in setting the message</value></fval>
+	<fval name="logFatal"><value>Error in setting the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Success in setting the message</value></fval>
+	<fval name="name"><value>Set bad request</value></fval>
+	<fval name="outputContentType"><value>application/json</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Webhook'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Register User'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='00_0_CreateTopic'/>
+					<key type='AddHTTPHeaderFilter'>
+						<id field='name' value='Add ConnectError header'/>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Reflector">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="httpResponseStatus"><value>400</value></fval>
+	<fval name="logFailure"><value>Failed to echo back the message</value></fval>
+	<fval name="logFatal"><value>Error occurred while echoing the message. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Successfully echoed back the message</value></fval>
+	<fval name="name"><value>Bad request</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="TrueFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value></value></fval>
+	<fval name="logFatal"><value>True filter error. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>True filter passed</value></fval>
+	<fval name="name"><value>All Good</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="FalseFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='Register User'/>
+			<key type='FilterCircuit'>
+				<id field='name' value='00_0_CreateTopic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>False filter error. Error: ${circuit.exception}</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value></value></fval>
+	<fval name="name"><value>Create Subscription Failed</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitContainer">
+	<key type='CircuitContainer'>
+		<id field='name' value='Webhook'/>
+	</key>
+	<fval name="name"><value>Register User</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="FilterCircuit">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+			</key>
+		</key>
+	</key>
+	<fval name="category"><value contentType="reference">
+		<key type='PolicyCategoryGroup'>
+			<id field='name' value='Policy Categories'/>
+			<key type='PolicyCategory'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="logMask"><value>3</value></fval>
+	<fval name="name"><value>Delete a topic</value></fval>
+	<fval name="start"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Delete a topic'/>
+						<key type='ServiceContextFilter'>
+							<id field='name' value='Set service context'/>
+						</key>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="CircuitDelegateFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='Delete a topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="circuitPK"><value contentType="reference">
+<key type='CircuitContainer'><id field='name' value='Webhook'/><key type='CircuitContainer'><id field='name' value='Unsubscribe Users'/><key type='FilterCircuit'><id field='name' value='02_0_Delete topic'/></key></key></key>	</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="name"><value>Routing</value></fval>
+</entity>
+<entity xmlns="http://www.vordel.com/2005/06/24/entityStore"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="ServiceContextFilter">
+	<key type='CircuitContainer'>
+		<id field='name' value='Generated Policies'/>
+		<key type='CircuitContainer'>
+			<id field='name' value='REST API&apos;s'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='Webhook topic'/>
+				<key type='FilterCircuit'>
+					<id field='name' value='Delete a topic'/>
+				</key>
+			</key>
+		</key>
+	</key>
+	<fval name="abortProcessingOnLogError"><value>0</value></fval>
+	<fval name="category"><value contentType="reference">
+		<key type='CategoryGroup'>
+			<id field='name' value='Filter Categories'/>
+			<key type='Category'>
+				<id field='name' value='miscellaneous'/>
+			</key>
+		</key>
+	</value></fval>
+	<fval name="clientAttributeName"><value>authentication.subject.id</value></fval>
+	<fval name="compositeContext"><value>0</value></fval>
+	<fval name="logFailure"><value>Filter failed</value></fval>
+	<fval name="logFatal"><value>Filter aborted due to exception</value></fval>
+	<fval name="logMask"><value>2</value></fval>
+	<fval name="logMaskType"><value>SERVICE</value></fval>
+	<fval name="logSuccess"><value>Filter passed</value></fval>
+	<fval name="metricsMask"><value>1</value></fval>
+	<fval name="name"><value>Set service context</value></fval>
+	<fval name="serviceName"><value>${api.name}</value></fval>
+	<fval name="successNode"><value contentType="reference">
+		<key type='CircuitContainer'>
+			<id field='name' value='Generated Policies'/>
+			<key type='CircuitContainer'>
+				<id field='name' value='REST API&apos;s'/>
+				<key type='CircuitContainer'>
+					<id field='name' value='Webhook topic'/>
+					<key type='FilterCircuit'>
+						<id field='name' value='Delete a topic'/>
+						<key type='CircuitDelegateFilter'>
+							<id field='name' value='Routing'/>
+						</key>
+					</key>
+				</key>
+			</key>
+		</key>
+	</value></fval>
+</entity>
+</entityStoreData>
